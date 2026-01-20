@@ -114,7 +114,7 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/sense">
       <AppContent />
     </BrowserRouter>
   );

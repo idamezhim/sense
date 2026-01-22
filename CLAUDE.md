@@ -10,6 +10,7 @@ Sense is a React-based forecasting/prediction tracking app deployed on GitHub Pa
 - React Router v7 for routing
 - Recharts for data visualization
 - framer-motion for animations
+- Remotion for video generation
 - GitHub Actions for CI/CD deployment
 
 ## Development Commands
@@ -18,6 +19,12 @@ npm run dev      # Start development server
 npm run build    # Build for production (runs tsc then vite build)
 npm run preview  # Preview production build locally
 npm run lint     # Run ESLint
+```
+
+## Remotion Video Commands
+```bash
+npm run remotion:studio   # Open Remotion Studio to preview/edit video
+npm run remotion:render   # Render video to out/launch-video.mp4
 ```
 
 ## Deployment
@@ -47,20 +54,25 @@ gh api repos/OWNER/REPO/pages -X POST --input - <<< '{"source":{"branch":"main",
 src/
   App.tsx           # Main app with React Router setup
   main.tsx          # Entry point
-  components/       # Reusable UI components (ForecastCard, ForecastForm, CloseModal, Navigation, Layout)
+  components/       # Reusable UI components (ForecastCard, ForecastForm, CloseModal, Navigation, Layout, LaunchVideo)
   pages/            # Page components (Landing, HowItWorks, ForecastLog, Dashboard, Settings, Onboarding)
   hooks/            # Custom hooks (useForecasts, useLocalStorage)
   utils/            # Utility functions (scoring, export, analytics)
   types/            # TypeScript type definitions
+  remotion/         # Remotion entry point and composition registry
 public/
   404.html          # SPA routing fallback for GitHub Pages
   favicon.svg       # App favicon
+  music.mp3         # Background music for launch video
+out/
+  launch-video.mp4  # Rendered video output (not committed)
 ```
 
 ## Design System
 
 ### Theme
-- **Dark mode only** - Light mode was removed for simplicity
+- **App**: Dark mode only (slate backgrounds with glass morphism)
+- **Landing page**: Light theme (`#FAFAF9` background, `#1A1A1A` text)
 - Theme color: `#4F46E5` (indigo)
 
 ### Card Design (Linear-inspired glass effect)
@@ -84,3 +96,21 @@ When working with the `Forecast` type:
 - Use `byWhen` for the due date
 - Use `status: 'open' | 'closed'` for forecast state
 - Use `brierScore` (optional) for closed forecasts
+
+## Remotion Video Integration
+
+### Architecture
+- `src/components/LaunchVideo.tsx` - Video composition and scenes
+- `src/remotion/Root.tsx` - Composition registry for Remotion CLI
+- `src/remotion/index.ts` - Remotion entry point
+- `remotion.config.ts` - Remotion CLI configuration
+
+### Audio Path Differences (Vite vs Remotion CLI)
+- **For Vite/web**: Use `/sense/music.mp3` (respects base path)
+- **For Remotion CLI render**: Use `staticFile('music.mp3')`
+- When rendering, temporarily change to `staticFile()`, render, then change back
+
+### Remotion Player Props
+- Use `renderPoster` for custom preview image before playback
+- Use `showPosterWhenUnplayed` to show poster until user clicks play
+- Audio requires user interaction due to browser autoplay policies

@@ -7,19 +7,6 @@ import {
   Sequence,
 } from 'remotion';
 
-// Sense Logo
-function Logo({ size = 80 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="8" fill="#4F46E5"/>
-      <path d="M8 20V22H24V20" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M11 18V14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M16 18V11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M21 18V8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
 // Animated Gauge Ring
 function GaugeRing({ percent, progress }: { percent: number; progress: number }) {
   const radius = 40;
@@ -83,32 +70,7 @@ function TypedText({ text, progress }: { text: string; progress: number }) {
   );
 }
 
-// Scene 1: Logo intro
-function IntroScene() {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  const logoScale = spring({ frame, fps, config: { damping: 12 } });
-  const textOpacity = interpolate(frame, [15, 30], [0, 1], { extrapolateRight: 'clamp', extrapolateLeft: 'clamp' });
-  const textY = interpolate(frame, [15, 30], [20, 0], { extrapolateRight: 'clamp', extrapolateLeft: 'clamp' });
-
-  return (
-    <AbsoluteFill style={{ backgroundColor: '#FAFAF9', justifyContent: 'center', alignItems: 'center' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-        <div style={{ transform: `scale(${logoScale})` }}>
-          <Logo size={100} />
-        </div>
-        <div style={{ opacity: textOpacity, transform: `translateY(${textY}px)` }}>
-          <span style={{ fontSize: 36, fontWeight: 600, color: '#1A1A1A', fontFamily: 'system-ui' }}>
-            Sense
-          </span>
-        </div>
-      </div>
-    </AbsoluteFill>
-  );
-}
-
-// Scene 2: Problem statement
+// Scene 1: Problem statement
 function ProblemScene() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -347,56 +309,6 @@ function DashboardScene() {
               <circle cx={200 * lineProgress} cy={50 - (35 * lineProgress)} r="4" fill="#4F46E5"/>
             )}
           </svg>
-        </div>
-      </div>
-    </AbsoluteFill>
-  );
-}
-
-// Scene 6: Call to action
-function CTAScene() {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  const titleScale = spring({ frame, fps, config: { damping: 12 } });
-  const buttonScale = spring({ frame: frame - 20, fps, config: { damping: 15 } });
-
-  return (
-    <AbsoluteFill style={{ backgroundColor: '#FAFAF9', justifyContent: 'center', alignItems: 'center', padding: 40 }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ transform: `scale(${titleScale})`, marginBottom: 24 }}>
-          <Logo size={80} />
-        </div>
-        <h2 style={{
-          fontSize: 28,
-          fontWeight: 600,
-          color: '#1A1A1A',
-          marginBottom: 8,
-          transform: `scale(${titleScale})`,
-          fontFamily: 'system-ui',
-        }}>
-          Measure your product sense
-        </h2>
-        <p style={{
-          fontSize: 16,
-          color: '#707070',
-          marginBottom: 24,
-          fontFamily: 'system-ui',
-        }}>
-          Start tracking predictions today
-        </p>
-        <div style={{
-          display: 'inline-block',
-          backgroundColor: '#1A1A1A',
-          color: 'white',
-          padding: '14px 28px',
-          borderRadius: 100,
-          fontWeight: 600,
-          fontSize: 16,
-          transform: `scale(${Math.max(0, buttonScale)})`,
-          fontFamily: 'system-ui',
-        }}>
-          Get Started Free
         </div>
       </div>
     </AbsoluteFill>

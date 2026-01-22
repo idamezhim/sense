@@ -9,6 +9,7 @@ Sense is a React-based forecasting/prediction tracking app deployed on GitHub Pa
 - Tailwind CSS v4 for styling
 - React Router v7 for routing
 - Recharts for data visualization
+- framer-motion for animations
 - GitHub Actions for CI/CD deployment
 
 ## Development Commands
@@ -46,11 +47,40 @@ gh api repos/OWNER/REPO/pages -X POST --input - <<< '{"source":{"branch":"main",
 src/
   App.tsx           # Main app with React Router setup
   main.tsx          # Entry point
-  components/       # Reusable UI components
-  pages/            # Page components (ForecastLog, Dashboard, Settings, Onboarding)
+  components/       # Reusable UI components (ForecastCard, ForecastForm, CloseModal, Navigation, Layout)
+  pages/            # Page components (Landing, HowItWorks, ForecastLog, Dashboard, Settings, Onboarding)
   hooks/            # Custom hooks (useForecasts, useLocalStorage)
   utils/            # Utility functions (scoring, export, analytics)
   types/            # TypeScript type definitions
 public/
   404.html          # SPA routing fallback for GitHub Pages
+  favicon.svg       # App favicon
 ```
+
+## Design System
+
+### Theme
+- **Dark mode only** - Light mode was removed for simplicity
+- Theme color: `#4F46E5` (indigo)
+
+### Card Design (Linear-inspired glass effect)
+```tsx
+style={{
+  background: 'linear-gradient(to bottom right, rgba(51, 65, 85, 0.5), rgba(30, 41, 59, 0.5))',
+  boxShadow: 'inset 0 1px 0 0 rgba(148, 163, 184, 0.1)',
+}}
+// With subtle border that lightens on hover
+<div className="absolute inset-0 rounded-xl border border-slate-700/50 group-hover:border-slate-600/80" />
+```
+
+### Mobile Responsiveness
+- Use `sm:` breakpoint for desktop-specific styles
+- Buttons: Show abbreviated text on mobile (`<span className="sm:hidden">New</span>`)
+- Filter tabs: `flex-1 sm:flex-none` for full-width on mobile
+
+## Important Type Fields
+When working with the `Forecast` type:
+- Use `dateCreated` (not `createdAt`) for when the forecast was created
+- Use `byWhen` for the due date
+- Use `status: 'open' | 'closed'` for forecast state
+- Use `brierScore` (optional) for closed forecasts

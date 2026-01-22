@@ -120,13 +120,13 @@ export function Settings({
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-slate-400 mt-1">Manage your profile and preferences</p>
+        <h1 className="text-2xl font-semibold text-[#1A1A1A]">Settings</h1>
+        <p className="text-[#707070] mt-1">Manage your profile and preferences</p>
       </div>
 
       {/* Profile Settings */}
       <div className="card mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Profile</h2>
+        <h2 className="text-lg font-semibold text-[#1A1A1A] mb-4">Profile</h2>
         <form onSubmit={handleProfileSave} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -171,7 +171,7 @@ export function Settings({
               Save Profile
             </button>
             {profileSaved && (
-              <span className="text-green-400 text-sm">Profile saved!</span>
+              <span className="text-green-600 text-sm">Profile saved!</span>
             )}
           </div>
         </form>
@@ -180,10 +180,10 @@ export function Settings({
       {/* Weight Settings */}
       <div className="card mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Weight Settings</h2>
+          <h2 className="text-lg font-semibold text-[#1A1A1A]">Weight Settings</h2>
           <button
             onClick={handleResetWeights}
-            className="text-sm text-slate-400 hover:text-white"
+            className="text-sm text-[#707070] hover:text-[#1A1A1A]"
           >
             Reset to defaults
           </button>
@@ -191,11 +191,11 @@ export function Settings({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-sm font-medium text-slate-300 mb-3">Bet Type Weights</h3>
+            <h3 className="text-sm font-medium text-[#374151] mb-3">Bet Type Weights</h3>
             <div className="space-y-3">
               {betTypes.map((betType) => (
                 <div key={betType} className="flex items-center justify-between">
-                  <label className="text-sm text-slate-400">{betType}</label>
+                  <label className="text-sm text-[#707070]">{betType}</label>
                   <input
                     type="number"
                     min="0.1"
@@ -205,7 +205,7 @@ export function Settings({
                     onChange={(e) =>
                       handleWeightChange('betType', betType, parseFloat(e.target.value) || 1)
                     }
-                    className="w-20 px-2 py-1 text-sm bg-slate-700 border border-slate-600 rounded text-white"
+                    className="w-20 px-2 py-1 text-sm bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-[#1A1A1A]"
                   />
                 </div>
               ))}
@@ -213,11 +213,11 @@ export function Settings({
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-slate-300 mb-3">Novelty Weights</h3>
+            <h3 className="text-sm font-medium text-[#374151] mb-3">Novelty Weights</h3>
             <div className="space-y-3">
               {noveltyOptions.map((novelty) => (
                 <div key={novelty} className="flex items-center justify-between">
-                  <label className="text-sm text-slate-400">{novelty}</label>
+                  <label className="text-sm text-[#707070]">{novelty}</label>
                   <input
                     type="number"
                     min="0.1"
@@ -227,7 +227,7 @@ export function Settings({
                     onChange={(e) =>
                       handleWeightChange('novelty', novelty, parseFloat(e.target.value) || 1)
                     }
-                    className="w-20 px-2 py-1 text-sm bg-slate-700 border border-slate-600 rounded text-white"
+                    className="w-20 px-2 py-1 text-sm bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-[#1A1A1A]"
                   />
                 </div>
               ))}
@@ -240,14 +240,14 @@ export function Settings({
             Save Weights
           </button>
           {weightsSaved && (
-            <span className="text-green-400 text-sm">Weights saved!</span>
+            <span className="text-green-600 text-sm">Weights saved!</span>
           )}
         </div>
       </div>
 
       {/* Data Management */}
       <div className="card mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Data Management</h2>
+        <h2 className="text-lg font-semibold text-[#1A1A1A] mb-4">Data Management</h2>
 
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -267,22 +267,22 @@ export function Settings({
           </div>
 
           {importError && (
-            <p className="text-red-400 text-sm">{importError}</p>
+            <p className="text-red-500 text-sm">{importError}</p>
           )}
           {importSuccess && (
-            <p className="text-green-400 text-sm">Data imported successfully!</p>
+            <p className="text-green-600 text-sm">Data imported successfully!</p>
           )}
 
-          <div className="bg-amber-900/30 border border-amber-700 rounded-lg p-3 text-sm text-amber-200">
-            <strong>Note:</strong> Your data is stored locally in your browser. Export regularly
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+            <span className="font-medium">Note:</span> Your data is stored locally in your browser. Export regularly
             to back up your forecasts.
           </div>
         </div>
       </div>
 
       {/* Danger Zone */}
-      <div className="card border-red-800">
-        <h2 className="text-lg font-semibold text-red-400 mb-4">Danger Zone</h2>
+      <div className="card border-red-200">
+        <h2 className="text-lg font-semibold text-red-500 mb-4">Danger Zone</h2>
 
         {!showClearConfirm ? (
           <button
@@ -292,8 +292,8 @@ export function Settings({
             Clear All Data
           </button>
         ) : (
-          <div className="bg-red-900/30 border border-red-800 rounded-lg p-4">
-            <p className="text-red-300 mb-4">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+            <p className="text-red-600 mb-4">
               Are you sure you want to delete all your data? This action cannot be undone.
             </p>
             <div className="flex gap-3">

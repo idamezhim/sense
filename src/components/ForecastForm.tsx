@@ -55,13 +55,13 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
 
   // Fun feedback based on probability
   const getProbabilityFeedback = (prob: number) => {
-    if (prob <= 10) return { emoji: '🎲', text: 'Long shot', color: 'text-slate-400' };
-    if (prob <= 25) return { emoji: '🤔', text: 'Unlikely', color: 'text-amber-400' };
-    if (prob <= 40) return { emoji: '⚖️', text: 'Possible', color: 'text-yellow-400' };
-    if (prob <= 60) return { emoji: '🎯', text: 'Toss-up', color: 'text-blue-400' };
-    if (prob <= 75) return { emoji: '📈', text: 'Likely', color: 'text-emerald-400' };
-    if (prob <= 90) return { emoji: '💪', text: 'Confident', color: 'text-green-400' };
-    return { emoji: '🔥', text: 'Almost certain', color: 'text-indigo-400' };
+    if (prob <= 10) return { emoji: '🎲', text: 'Long shot', color: 'text-[#9CA3AF]' };
+    if (prob <= 25) return { emoji: '🤔', text: 'Unlikely', color: 'text-amber-600' };
+    if (prob <= 40) return { emoji: '⚖️', text: 'Possible', color: 'text-yellow-600' };
+    if (prob <= 60) return { emoji: '🎯', text: 'Toss-up', color: 'text-blue-600' };
+    if (prob <= 75) return { emoji: '📈', text: 'Likely', color: 'text-emerald-600' };
+    if (prob <= 90) return { emoji: '💪', text: 'Confident', color: 'text-green-600' };
+    return { emoji: '🔥', text: 'Almost certain', color: 'text-indigo-600' };
   };
 
   const feedback = getProbabilityFeedback(probability);
@@ -177,10 +177,10 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
   return (
     <div className="card">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-white">New Forecast</h2>
+        <h2 className="text-xl font-semibold text-[#1A1A1A]">New Forecast</h2>
         <button
           onClick={onCancel}
-          className="text-slate-400 hover:text-white"
+          className="text-[#9CA3AF] hover:text-[#1A1A1A]"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -215,7 +215,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
             id="prediction"
             value={prediction}
             onChange={(e) => setPrediction(e.target.value)}
-            className={`input min-h-[80px] ${errors.prediction ? 'border-red-500' : ''}`}
+            className={`input min-h-[80px] ${errors.prediction ? 'border-red-400' : ''}`}
             placeholder="e.g., Our new onboarding flow will increase user activation by reducing time-to-value"
           />
           {errors.prediction && (
@@ -251,7 +251,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
               id="targetThreshold"
               value={targetThreshold}
               onChange={(e) => setTargetThreshold(e.target.value)}
-              className={`input ${errors.targetThreshold ? 'border-red-500' : ''}`}
+              className={`input ${errors.targetThreshold ? 'border-red-400' : ''}`}
               placeholder="e.g., 25,000 MAU"
             />
             {errors.targetThreshold && (
@@ -270,7 +270,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
               id="byWhen"
               value={byWhen}
               onChange={(e) => setByWhen(e.target.value)}
-              className={`input ${errors.byWhen ? 'border-red-500' : ''}`}
+              className={`input ${errors.byWhen ? 'border-red-400' : ''}`}
             />
             <div className="flex gap-1 mt-2">
               {[
@@ -283,7 +283,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
                   key={option.label}
                   type="button"
                   onClick={() => setQuickDate(option.days)}
-                  className="px-2 py-1 text-xs rounded transition-colors bg-slate-700 hover:bg-slate-600 text-slate-300"
+                  className="px-2 py-1 text-xs rounded transition-colors bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#374151]"
                 >
                   {option.label}
                 </button>
@@ -317,18 +317,18 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
           <label htmlFor="probability" className="label">
             Your Probability
           </label>
-          <div className="rounded-xl p-4 mb-2 bg-slate-700/50">
+          <div className="rounded-xl p-4 mb-2 bg-[#F9FAFB] border border-[#E5E7EB]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-3xl">{feedback.emoji}</span>
                 <div>
-                  <span className="text-2xl font-bold tabular-nums text-white">{probability}%</span>
+                  <span className="text-2xl font-bold tabular-nums text-[#1A1A1A]">{probability}%</span>
                   <p className={`text-sm font-medium ${feedback.color}`}>{feedback.text}</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-xs text-slate-400">Bucket</span>
-                <p className="text-sm font-medium text-slate-300">{confidenceBucket}</p>
+                <span className="text-xs text-[#9CA3AF]">Bucket</span>
+                <p className="text-sm font-medium text-[#374151]">{confidenceBucket}</p>
               </div>
             </div>
             <input
@@ -338,9 +338,9 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
               max="100"
               value={probability}
               onChange={(e) => setProbability(Number(e.target.value))}
-              className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-indigo-500 bg-slate-600"
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-indigo-500 bg-[#E5E7EB]"
             />
-            <div className="flex justify-between text-xs mt-2 text-slate-500">
+            <div className="flex justify-between text-xs mt-2 text-[#9CA3AF]">
               <span>Unlikely</span>
               <span>Certain</span>
             </div>
@@ -359,7 +359,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
             placeholder="What data, user research, or reasoning supports this prediction?"
             maxLength={2000}
           />
-          <div className="text-xs mt-1 text-right text-slate-500">
+          <div className="text-xs mt-1 text-right text-[#9CA3AF]">
             {evidence.length}/2000
           </div>
         </div>
@@ -376,14 +376,14 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
             placeholder="What could cause this prediction to be wrong?"
             maxLength={1000}
           />
-          <div className="text-xs mt-1 text-right text-slate-500">
+          <div className="text-xs mt-1 text-right text-[#9CA3AF]">
             {risks.length}/1000
           </div>
         </div>
 
         <div>
           <label className="label">Supporting Image (optional)</label>
-          <p className="text-xs mb-2 text-slate-400">
+          <p className="text-xs mb-2 text-[#707070]">
             PNG, JPG, GIF, or WebP up to 2MB (compressed to ~500KB)
           </p>
 
@@ -393,10 +393,10 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+              className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
                 isDragging
-                  ? 'border-indigo-500 bg-indigo-900/20'
-                  : 'border-slate-600 hover:border-slate-500'
+                  ? 'border-indigo-500 bg-indigo-50'
+                  : 'border-[#E5E7EB] hover:border-[#9CA3AF]'
               }`}
             >
               <input
@@ -407,7 +407,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
                 className="hidden"
               />
               {isProcessingImage ? (
-                <div className="text-slate-400">
+                <div className="text-[#707070]">
                   <svg
                     className="w-8 h-8 mx-auto mb-2 animate-spin"
                     fill="none"
@@ -430,7 +430,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
                   <span>Processing image...</span>
                 </div>
               ) : (
-                <div className="text-slate-400">
+                <div className="text-[#707070]">
                   <svg
                     className="w-8 h-8 mx-auto mb-2"
                     fill="none"
@@ -449,7 +449,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
               )}
             </div>
           ) : (
-            <div className="relative rounded-lg p-3 border border-slate-600">
+            <div className="relative rounded-xl p-3 border border-[#E5E7EB] bg-[#F9FAFB]">
               <div className="flex items-center gap-3">
                 <img
                   src={imageData}
@@ -457,15 +457,15 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate text-white">{imageName}</p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-sm truncate text-[#1A1A1A]">{imageName}</p>
+                  <p className="text-xs text-[#707070]">
                     {formatBytes(estimateStorageSize(imageData))} (compressed)
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={removeImage}
-                  className="text-slate-400 hover:text-red-400 p-1"
+                  className="text-[#9CA3AF] hover:text-red-500 p-1"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -481,7 +481,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
           )}
 
           {imageError && (
-            <p className="text-red-400 text-sm mt-2">{imageError}</p>
+            <p className="text-red-500 text-sm mt-2">{imageError}</p>
           )}
         </div>
 

@@ -1,5 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, createContext, useContext } from 'react';
+
+// Context to track which animation is currently active
+const ActiveAnimationContext = createContext<{
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
+}>({ activeId: null, setActiveId: () => {} });
 
 function Logo({ className = "w-8 h-8" }: { className?: string }) {
   return (
@@ -41,9 +47,28 @@ function CreateMock() {
   const fullText = "New onboarding flow will increase activation by 15%";
   const [displayText, setDisplayText] = useState("");
   const [step, setStep] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const { activeId, setActiveId } = useContext(ActiveAnimationContext);
+  const isActive = activeId === 'create';
   // Steps: 0 = typing, 1 = done typing, 2 = button clicked, 3 = reset
 
+  // IntersectionObserver to set this as active when in view
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActiveId('create');
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [setActiveId]);
+
+  useEffect(() => {
+    if (!isActive) return;
+
     if (step === 0) {
       // Typing phase
       if (displayText.length < fullText.length) {
@@ -71,36 +96,36 @@ function CreateMock() {
       setDisplayText("");
       setStep(0);
     }
-  }, [displayText, step]);
+  }, [displayText, step, isActive]);
 
   const isButtonHovered = step === 1;
   const isButtonClicked = step === 2;
-  const showCursor = step === 0;
+  const showCursor = step === 0 && isActive;
 
   return (
-    <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+    <div ref={ref} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#E8E8E8]">
       <div className="p-6">
-        <h3 className="text-white font-semibold mb-4">New Prediction</h3>
+        <h3 className="text-[#1A1A1A] font-semibold mb-4">New Prediction</h3>
         <div className="space-y-4">
           <div>
-            <label className="text-slate-400 text-sm block mb-1">What will happen?</label>
-            <div className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-slate-300 min-h-[48px]">
+            <label className="text-[#707070] text-sm block mb-1">What will happen?</label>
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#374151] min-h-[48px]">
               {displayText}
               {showCursor && (
-                <span className="inline-block w-0.5 h-5 bg-indigo-400 ml-0.5 animate-pulse align-middle" />
+                <span className="inline-block w-0.5 h-5 bg-indigo-500 ml-0.5 animate-pulse align-middle" />
               )}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-slate-400 text-sm block mb-1">Probability</label>
-              <div className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-indigo-400 font-semibold">
+              <label className="text-[#707070] text-sm block mb-1">Probability</label>
+              <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-4 py-3 text-indigo-600 font-semibold">
                 80%
               </div>
             </div>
             <div>
-              <label className="text-slate-400 text-sm block mb-1">Due date</label>
-              <div className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-slate-300">
+              <label className="text-[#707070] text-sm block mb-1">Due date</label>
+              <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#374151]">
                 Mar 15, 2025
               </div>
             </div>
@@ -126,6 +151,9 @@ function LogMock() {
   const [scrollOffset, setScrollOffset] = useState(0);
   const [phase, setPhase] = useState<'scrolling' | 'paused' | 'resetting'>('scrolling');
   const maxScroll = 120; // Scroll until we see the last items
+  const ref = useRef<HTMLDivElement>(null);
+  const { activeId, setActiveId } = useContext(ActiveAnimationContext);
+  const isActive = activeId === 'log';
 
   const forecasts = [
     { text: 'New onboarding increases activation', prob: 80, status: 'open' },
@@ -135,7 +163,23 @@ function LogMock() {
     { text: 'Search feature adoption > 40%', prob: 60, status: 'closed', result: false },
   ];
 
+  // IntersectionObserver to set this as active when in view
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActiveId('log');
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [setActiveId]);
+
+  useEffect(() => {
+    if (!isActive) return;
+
     if (phase === 'scrolling') {
       if (scrollOffset < maxScroll) {
         const timeout = setTimeout(() => {
@@ -155,14 +199,14 @@ function LogMock() {
       setScrollOffset(0);
       setPhase('scrolling');
     }
-  }, [scrollOffset, phase]);
+  }, [scrollOffset, phase, isActive]);
 
   return (
-    <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+    <div ref={ref} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#E8E8E8]">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-white font-semibold">Forecast Log</h3>
-          <span className="text-xs text-slate-500">3 open</span>
+          <h3 className="text-[#1A1A1A] font-semibold">Forecast Log</h3>
+          <span className="text-xs text-[#707070]">3 open</span>
         </div>
         <div className="h-[180px] overflow-hidden relative">
           <div
@@ -173,17 +217,17 @@ function LogMock() {
             }}
           >
             {forecasts.map((item, i) => (
-              <div key={i} className={`rounded-lg p-4 ${item.status === 'open' ? 'bg-slate-800 border border-slate-700' : 'bg-slate-800/50'}`}>
+              <div key={i} className={`rounded-lg p-4 ${item.status === 'open' ? 'bg-[#F3F4F6] border border-[#E5E7EB]' : 'bg-[#F9FAFB]'}`}>
                 <div className="flex items-center justify-between">
-                  <p className={`text-sm ${item.status === 'open' ? 'text-slate-200' : 'text-slate-500'}`}>{item.text}</p>
-                  <span className={`text-sm font-semibold ${item.status === 'open' ? 'text-indigo-400' : item.result ? 'text-emerald-500' : 'text-red-400'}`}>
+                  <p className={`text-sm ${item.status === 'open' ? 'text-[#1A1A1A]' : 'text-[#9CA3AF]'}`}>{item.text}</p>
+                  <span className={`text-sm font-semibold ${item.status === 'open' ? 'text-indigo-600' : item.result ? 'text-emerald-500' : 'text-red-400'}`}>
                     {item.status === 'open' ? `${item.prob}%` : item.result ? '✓' : '✗'}
                   </span>
                 </div>
               </div>
             ))}
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none" />
         </div>
       </div>
     </div>
@@ -194,9 +238,28 @@ function CloseMock() {
   const [step, setStep] = useState(0);
   const [notesText, setNotesText] = useState("");
   const fullNotes = "Activation improved from 42% to 51%...";
+  const ref = useRef<HTMLDivElement>(null);
+  const { activeId, setActiveId } = useContext(ActiveAnimationContext);
+  const isActive = activeId === 'close';
   // Steps: 0 = initial, 1 = hover didn't happen, 2 = hover happened, 3 = selected happened, 4 = typing notes, 5 = done
 
+  // IntersectionObserver to set this as active when in view
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActiveId('close');
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [setActiveId]);
+
+  useEffect(() => {
+    if (!isActive) return;
+
     if (step === 0) {
       const timeout = setTimeout(() => setStep(1), 1500);
       return () => clearTimeout(timeout);
@@ -227,39 +290,39 @@ function CloseMock() {
       }, 2500);
       return () => clearTimeout(timeout);
     }
-  }, [step, notesText]);
+  }, [step, notesText, isActive]);
 
-  const showNotesCursor = step === 4;
+  const showNotesCursor = step === 4 && isActive;
 
   return (
-    <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+    <div ref={ref} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#E8E8E8]">
       <div className="p-6">
-        <h3 className="text-white font-semibold mb-2">Close Prediction</h3>
-        <p className="text-slate-400 text-sm mb-4">New onboarding increases activation by 15%</p>
+        <h3 className="text-[#1A1A1A] font-semibold mb-2">Close Prediction</h3>
+        <p className="text-[#707070] text-sm mb-4">New onboarding increases activation by 15%</p>
         <div className="grid grid-cols-2 gap-3 mb-4">
           <button className={`py-3 rounded-lg font-medium transition-all duration-300 ${
             step >= 3
-              ? 'bg-emerald-600 border border-emerald-500 text-white scale-[1.02]'
+              ? 'bg-emerald-500 border border-emerald-400 text-white scale-[1.02]'
               : step === 2
-                ? 'bg-emerald-600/30 border border-emerald-500 text-emerald-300'
-                : 'bg-slate-800 border border-slate-600 text-slate-400'
+                ? 'bg-emerald-50 border border-emerald-300 text-emerald-600'
+                : 'bg-[#F3F4F6] border border-[#E5E7EB] text-[#707070]'
           }`}>
             ✓ Happened
           </button>
           <button className={`py-3 rounded-lg font-medium transition-all duration-300 ${
             step === 1
-              ? 'bg-red-600/30 border border-red-500 text-red-300'
-              : 'bg-slate-800 border border-slate-600 text-slate-400'
+              ? 'bg-red-50 border border-red-300 text-red-600'
+              : 'bg-[#F3F4F6] border border-[#E5E7EB] text-[#707070]'
           }`}>
             ✗ Didn't happen
           </button>
         </div>
         <div>
-          <label className="text-slate-400 text-sm block mb-1">Notes (optional)</label>
-          <div className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-slate-300 text-sm min-h-[44px]">
+          <label className="text-[#707070] text-sm block mb-1">Notes (optional)</label>
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#374151] text-sm min-h-[44px]">
             {notesText}
             {showNotesCursor && (
-              <span className="inline-block w-0.5 h-4 bg-indigo-400 ml-0.5 animate-pulse align-middle" />
+              <span className="inline-block w-0.5 h-4 bg-indigo-500 ml-0.5 animate-pulse align-middle" />
             )}
           </div>
         </div>
@@ -270,40 +333,59 @@ function CloseMock() {
 
 function DashboardMock() {
   const [progress, setProgress] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const { activeId, setActiveId } = useContext(ActiveAnimationContext);
+  const isActive = activeId === 'dashboard';
+
+  // IntersectionObserver to set this as active when in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActiveId('dashboard');
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [setActiveId]);
 
   useEffect(() => {
+    if (!isActive) return;
+
     const interval = setInterval(() => {
       setProgress(prev => (prev >= 100 ? 0 : prev + 1));
     }, 40);
     return () => clearInterval(interval);
-  }, []);
+  }, [isActive]);
 
   // Calculate path points based on progress
   const pathLength = 200;
   const visibleLength = (progress / 100) * pathLength;
 
   return (
-    <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+    <div ref={ref} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#E8E8E8]">
       <div className="p-6">
-        <h3 className="text-white font-semibold mb-4">Dashboard</h3>
+        <h3 className="text-[#1A1A1A] font-semibold mb-4">Dashboard</h3>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-slate-800 rounded-lg p-4">
-            <p className="text-slate-500 text-xs mb-1">Brier Score</p>
-            <p className="text-2xl font-bold text-emerald-400">0.18</p>
+          <div className="bg-[#F3F4F6] rounded-lg p-4">
+            <p className="text-[#707070] text-xs mb-1">Brier Score</p>
+            <p className="text-2xl font-bold text-emerald-500">0.18</p>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4">
-            <p className="text-slate-500 text-xs mb-1">Predictions</p>
-            <p className="text-2xl font-bold text-slate-200">24</p>
+          <div className="bg-[#F3F4F6] rounded-lg p-4">
+            <p className="text-[#707070] text-xs mb-1">Predictions</p>
+            <p className="text-2xl font-bold text-[#1A1A1A]">24</p>
           </div>
         </div>
-        <div className="bg-slate-800 rounded-lg p-4">
-          <p className="text-slate-500 text-xs mb-2">Accuracy trend</p>
+        <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg p-4">
+          <p className="text-[#707070] text-xs mb-2">Accuracy trend</p>
           <svg className="w-full h-16" viewBox="0 0 200 60">
             {/* Background line */}
             <path
               d="M0 45 L40 42 L80 38 L120 30 L160 25 L200 20"
               fill="none"
-              stroke="#334155"
+              stroke="#E5E7EB"
               strokeWidth="2"
             />
             {/* Animated line */}
@@ -449,7 +531,10 @@ function CoinFlip() {
 }
 
 export function HowItWorks() {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
   return (
+    <ActiveAnimationContext.Provider value={{ activeId, setActiveId }}>
     <div className="min-h-dvh bg-[#FAFAF9] text-[#1A1A1A]">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAFAF9]/80 backdrop-blur-sm">
@@ -605,5 +690,6 @@ export function HowItWorks() {
         </div>
       </footer>
     </div>
+    </ActiveAnimationContext.Provider>
   );
 }

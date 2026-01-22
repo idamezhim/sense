@@ -1,5 +1,17 @@
 import { useState } from 'react';
 
+function Logo({ className = "w-12 h-12" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill="#4F46E5"/>
+      <path d="M8 20V22H24V20" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M11 18V14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M16 18V11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M21 18V8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 interface OnboardingProps {
   onComplete: (data: { fullName: string; company: string; email: string }) => void;
 }
@@ -37,20 +49,20 @@ export function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-2xl">S</span>
+          <div className="flex justify-center mb-4">
+            <Logo className="w-14 h-14" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Welcome to Sense</h1>
-          <p className="text-slate-400 mt-2">Measure Your Judgment. Not Your Luck.</p>
+          <h1 className="text-2xl font-semibold text-[#1A1A1A]">Welcome to Sense</h1>
+          <p className="text-[#707070] mt-2">Measure your judgment. Not your luck.</p>
         </div>
 
-        <div className="card">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-[#E8E8E8] p-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="fullName" className="label">
+              <label htmlFor="fullName" className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
                 Full Name
               </label>
               <input
@@ -58,16 +70,16 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 id="fullName"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className={`input ${errors.fullName ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 bg-[#F9FAFB] border rounded-xl text-[#1A1A1A] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${errors.fullName ? 'border-red-400' : 'border-[#E5E7EB]'}`}
                 placeholder="Jane Smith"
               />
               {errors.fullName && (
-                <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                <p className="text-red-500 text-sm mt-1.5">{errors.fullName}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="company" className="label">
+              <label htmlFor="company" className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
                 Company
               </label>
               <input
@@ -75,16 +87,16 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 id="company"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
-                className={`input ${errors.company ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 bg-[#F9FAFB] border rounded-xl text-[#1A1A1A] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${errors.company ? 'border-red-400' : 'border-[#E5E7EB]'}`}
                 placeholder="Acme Inc."
               />
               {errors.company && (
-                <p className="text-red-500 text-sm mt-1">{errors.company}</p>
+                <p className="text-red-500 text-sm mt-1.5">{errors.company}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="email" className="label">
+              <label htmlFor="email" className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
                 Email
               </label>
               <input
@@ -92,25 +104,32 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`input ${errors.email ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 bg-[#F9FAFB] border rounded-xl text-[#1A1A1A] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${errors.email ? 'border-red-400' : 'border-[#E5E7EB]'}`}
                 placeholder="jane@acme.com"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p className="text-red-500 text-sm mt-1.5">{errors.email}</p>
               )}
             </div>
 
-            <div className="bg-amber-900/30 border border-amber-700 rounded-lg p-3 text-sm text-amber-200">
-              <strong>Note:</strong> Your data is stored locally in your browser. It will
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+              <span className="font-medium">Note:</span> Your data is stored locally in your browser. It will
               be lost if you clear browser data or switch devices. Use the export feature
               to back up your data.
             </div>
 
-            <button type="submit" className="btn btn-primary w-full">
+            <button
+              type="submit"
+              className="w-full bg-[#1A1A1A] hover:bg-[#333] text-white py-3 px-6 rounded-full font-medium transition-colors"
+            >
               Get Started
             </button>
           </form>
         </div>
+
+        <p className="text-center text-sm text-[#9CA3AF] mt-6">
+          Your data never leaves your device
+        </p>
       </div>
     </div>
   );

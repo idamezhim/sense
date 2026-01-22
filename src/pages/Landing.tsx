@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { Player } from '@remotion/player';
+import { Player, PlayerRef } from '@remotion/player';
 import { LaunchVideoComposition, VIDEO_CONFIG } from '../components/LaunchVideo';
 
 function Logo({ className = "w-8 h-8" }: { className?: string }) {
@@ -143,6 +143,27 @@ function FeatureCard({
 }
 
 export function Landing() {
+  const playerRef = useRef<PlayerRef>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+
+  // Pause video when scrolled out of view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting && playerRef.current) {
+          playerRef.current.pause();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoContainerRef.current) {
+      observer.observe(videoContainerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-dvh bg-[#FAFAF9] text-[#1A1A1A]">
       {/* Navigation */}
@@ -170,8 +191,9 @@ export function Landing() {
       {/* Launch Video */}
       <section className="py-16 px-6">
         <div className="max-w-2xl mx-auto">
-          <div className="rounded-3xl overflow-hidden shadow-2xl shadow-black/10 border border-[#E8E8E8]">
+          <div ref={videoContainerRef} className="rounded-3xl overflow-hidden shadow-2xl shadow-black/10 border border-[#E8E8E8]">
             <Player
+              ref={playerRef}
               component={LaunchVideoComposition}
               durationInFrames={VIDEO_CONFIG.durationInFrames}
               compositionWidth={VIDEO_CONFIG.width}

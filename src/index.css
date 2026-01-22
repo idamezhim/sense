@@ -2,23 +2,23 @@
 
 @layer base {
   :root {
-    --bg-primary: #0A0A0A;
-    --bg-secondary: #111111;
-    --bg-tertiary: #171717;
-    --bg-elevated: #1A1A1A;
-    --border: #262626;
-    --border-light: #333333;
-    --text-primary: #EDEDED;
-    --text-secondary: #A1A1A1;
-    --text-tertiary: #707070;
+    --bg-primary: #FAFAF9;
+    --bg-secondary: #F5F5F4;
+    --bg-tertiary: #F3F4F6;
+    --bg-elevated: #FFFFFF;
+    --border: #E5E7EB;
+    --border-light: #E8E8E8;
+    --text-primary: #1A1A1A;
+    --text-secondary: #707070;
+    --text-tertiary: #9CA3AF;
   }
 
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
-    @apply bg-slate-900 text-slate-100 antialiased;
+    @apply bg-[#FAFAF9] text-[#1A1A1A] antialiased;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
@@ -68,30 +68,30 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white;
   }
 
   .btn-primary {
-    @apply bg-indigo-600 text-white hover:bg-indigo-500 focus:ring-indigo-500;
+    @apply bg-[#1A1A1A] text-white hover:bg-[#333] focus:ring-[#1A1A1A];
   }
 
   .btn-secondary {
-    @apply bg-slate-700 text-slate-200 border border-slate-600 hover:bg-slate-600 focus:ring-slate-500;
+    @apply bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB] hover:bg-[#E5E7EB] focus:ring-[#9CA3AF];
   }
 
   .btn-danger {
-    @apply bg-red-600 text-white hover:bg-red-500 focus:ring-red-500;
+    @apply bg-red-500 text-white hover:bg-red-600 focus:ring-red-500;
   }
 
   .input {
-    @apply w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent;
+    @apply w-full px-4 py-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl text-[#1A1A1A] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent;
   }
 
   .label {
-    @apply block text-sm font-medium text-slate-300 mb-1;
+    @apply block text-sm font-medium text-[#1A1A1A] mb-1.5;
   }
 
   .card {
-    @apply bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-6;
+    @apply bg-white rounded-2xl shadow-xl shadow-black/5 border border-[#E8E8E8] p-6;
   }
 }

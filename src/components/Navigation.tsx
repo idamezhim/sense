@@ -48,12 +48,12 @@ function SettingsIcon({ className }: { className?: string }) {
 
 export function Navigation() {
   return (
-    <nav className="bg-slate-800 border-b border-slate-700">
+    <nav className="bg-white/80 backdrop-blur-sm border-b border-[#E5E5E5] sticky top-0 z-40">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <Logo />
-            <span className="font-semibold text-white">Sense</span>
+            <span className="font-semibold text-[#1A1A1A]">Sense</span>
           </div>
 
           <div className="flex items-center gap-1">
@@ -65,8 +65,8 @@ export function Navigation() {
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-slate-700 text-indigo-400'
-                      : 'text-slate-400 hover:bg-slate-700 hover:text-white'
+                      ? 'bg-[#F3F4F6] text-indigo-600'
+                      : 'text-[#707070] hover:bg-[#F3F4F6] hover:text-[#1A1A1A]'
                   }`
                 }
               >

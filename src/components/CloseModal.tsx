@@ -35,14 +35,14 @@ export function CloseModal({ forecast, onClose, onCancel }: CloseModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#E8E8E8]">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white">Close Forecast</h2>
+            <h2 className="text-xl font-semibold text-[#1A1A1A]">Close Forecast</h2>
             <button
               onClick={onCancel}
-              className="text-slate-400 hover:text-white"
+              className="text-[#9CA3AF] hover:text-[#1A1A1A]"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -52,12 +52,12 @@ export function CloseModal({ forecast, onClose, onCancel }: CloseModalProps) {
 
           {/* Prediction Summary */}
           <div className="mb-6">
-            <p className="text-lg font-medium text-white mb-3">{forecast.prediction}</p>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-400">
-              <span>Target: <span className="text-slate-200">{forecast.targetThreshold}</span></span>
-              <span>Due: <span className="text-slate-200">{new Date(forecast.byWhen).toLocaleDateString()}</span></span>
-              <span>Predicted: <span className="text-indigo-400 font-semibold">{forecast.probability}%</span></span>
-              <span>Created: <span className="text-slate-200">{new Date(forecast.dateCreated).toLocaleDateString()}</span></span>
+            <p className="text-lg font-medium text-[#1A1A1A] mb-3">{forecast.prediction}</p>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[#707070]">
+              <span>Target: <span className="text-[#1A1A1A]">{forecast.targetThreshold}</span></span>
+              <span>Due: <span className="text-[#1A1A1A]">{new Date(forecast.byWhen).toLocaleDateString()}</span></span>
+              <span>Predicted: <span className="text-indigo-600 font-semibold">{forecast.probability}%</span></span>
+              <span>Created: <span className="text-[#1A1A1A]">{new Date(forecast.dateCreated).toLocaleDateString()}</span></span>
             </div>
           </div>
 
@@ -74,17 +74,17 @@ export function CloseModal({ forecast, onClose, onCancel }: CloseModalProps) {
                       setActualOutcome(level);
                       setError('');
                     }}
-                    className={`p-3 rounded-lg border text-left transition-colors ${
+                    className={`p-3 rounded-xl border text-left transition-colors ${
                       actualOutcome === level
-                        ? 'border-indigo-500 bg-indigo-900/30 text-white'
-                        : 'border-slate-600 hover:border-slate-500 hover:bg-slate-700/50 text-slate-300'
+                        ? 'border-indigo-500 bg-indigo-50 text-[#1A1A1A]'
+                        : 'border-[#E5E7EB] hover:border-[#9CA3AF] hover:bg-[#F9FAFB] text-[#374151]'
                     }`}
                   >
                     {level}
                   </button>
                 ))}
               </div>
-              {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             </div>
 
             <div className="mb-6">
@@ -121,7 +121,7 @@ export function CloseModal({ forecast, onClose, onCancel }: CloseModalProps) {
           <div className="relative max-w-4xl max-h-[90vh]">
             <button
               onClick={() => setShowImageLightbox(false)}
-              className="absolute -top-10 right-0 text-white hover:text-slate-300"
+              className="absolute -top-10 right-0 text-white hover:text-[#9CA3AF]"
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -134,7 +134,7 @@ export function CloseModal({ forecast, onClose, onCancel }: CloseModalProps) {
               onClick={(e) => e.stopPropagation()}
             />
             {forecast.imageName && (
-              <p className="text-center text-slate-400 mt-2">{forecast.imageName}</p>
+              <p className="text-center text-[#9CA3AF] mt-2">{forecast.imageName}</p>
             )}
           </div>
         </div>

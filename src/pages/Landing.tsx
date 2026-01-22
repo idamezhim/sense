@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Player } from '@remotion/player';
+import { LaunchVideoComposition, VIDEO_CONFIG } from '../components/LaunchVideo';
 
 function Logo({ className = "w-8 h-8" }: { className?: string }) {
   return (
@@ -13,159 +15,129 @@ function Logo({ className = "w-8 h-8" }: { className?: string }) {
   );
 }
 
-function GaugeRing({ percent, active }: { percent: number; active: boolean }) {
-  const radius = 54;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percent / 100) * circumference;
+function MobileNav() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <svg className="w-32 h-32" viewBox="0 0 120 120">
-      <circle
-        cx="60"
-        cy="60"
-        r={radius}
-        fill="none"
-        stroke="#F0F0F0"
-        strokeWidth="8"
-      />
-      <circle
-        cx="60"
-        cy="60"
-        r={radius}
-        fill="none"
-        stroke={active ? "#4F46E5" : "#E5E5E5"}
-        strokeWidth="8"
-        strokeLinecap="round"
-        strokeDasharray={circumference}
-        strokeDashoffset={active ? offset : circumference}
-        transform="rotate(-90 60 60)"
-        className="transition-all duration-1000 ease-out"
-      />
-      <text
-        x="60"
-        y="60"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        className={`text-2xl font-bold transition-colors duration-500 ${active ? 'fill-indigo-600' : 'fill-[#A0A0A0]'}`}
-        style={{ fontFamily: 'system-ui' }}
-      >
-        {percent}%
-      </text>
-    </svg>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAFAF9]/80 backdrop-blur-sm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Logo />
+          <span className="font-semibold text-lg">Sense</span>
+        </div>
+        <div className="flex items-center gap-3 sm:gap-6">
+          <a href="#features" className="hidden sm:block text-sm text-[#707070] hover:text-[#1A1A1A] transition-colors">Features</a>
+          <Link to="/how-it-works" className="hidden sm:block text-sm text-[#707070] hover:text-[#1A1A1A] transition-colors">How it works</Link>
+          <Link
+            to="/app"
+            className="bg-[#1A1A1A] hover:bg-[#333] text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full font-medium transition-colors text-sm"
+          >
+            Get Started
+          </Link>
+          {/* Hamburger button - mobile only */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="sm:hidden p-2 -mr-2 text-[#707070] hover:text-[#1A1A1A] transition-colors"
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu dropdown */}
+      {menuOpen && (
+        <div className="sm:hidden bg-[#FAFAF9] border-t border-[#E5E5E5] animate-fade-in">
+          <div className="px-4 py-3 space-y-1">
+            <a
+              href="#features"
+              onClick={() => setMenuOpen(false)}
+              className="block px-3 py-2 text-sm text-[#707070] hover:text-[#1A1A1A] hover:bg-[#F0F0F0] rounded-lg transition-colors"
+            >
+              Features
+            </a>
+            <Link
+              to="/how-it-works"
+              onClick={() => setMenuOpen(false)}
+              className="block px-3 py-2 text-sm text-[#707070] hover:text-[#1A1A1A] hover:bg-[#F0F0F0] rounded-lg transition-colors"
+            >
+              How it works
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 }
 
-function PredictionDemo() {
-  const [step, setStep] = useState(0);
-  const [outcome, setOutcome] = useState<'success' | 'fail' | null>(null);
+// Feature card with scroll-triggered animation for mobile
+function FeatureCard({
+  gradient,
+  borderColor,
+  iconColor,
+  icon,
+  title,
+  description,
+}: {
+  gradient: string;
+  borderColor: string;
+  iconColor: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (step < 2) {
-      const timer = setTimeout(() => setStep(s => s + 1), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [step]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setIsVisible(true);
+          setHasAnimated(true);
+          // Reset after animation completes
+          setTimeout(() => {
+            setIsVisible(false);
+          }, 2000);
+        }
+      },
+      { threshold: 0.5 }
+    );
 
-  const reset = () => {
-    setStep(0);
-    setOutcome(null);
-  };
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasAnimated]);
 
   return (
-    <div className="relative">
-      {/* Main Card */}
-      <div className="bg-white rounded-3xl shadow-xl shadow-black/5 border border-[#E8E8E8] overflow-hidden">
-        <div className="p-8">
-          <div className="flex items-center gap-8">
-            <GaugeRing percent={80} active={step >= 1} />
-            <div className="flex-1">
-              <span className="text-xs font-medium text-indigo-600 uppercase tracking-wide">Prediction</span>
-              <p className="text-[#1A1A1A] font-medium text-lg mt-1 leading-snug">
-                New onboarding will increase activation by 15%
-              </p>
-              <p className="text-[#909090] text-sm mt-2">Due March 15, 2025</p>
-            </div>
-          </div>
+    <div
+      ref={cardRef}
+      className={`${gradient} ${borderColor} rounded-3xl p-8 aspect-square flex flex-col group`}
+    >
+      <div className="flex-1 flex items-center justify-center">
+        <div
+          className={`${iconColor} transition-transform duration-500 ${
+            isVisible ? 'scale-110' : 'group-hover:scale-110'
+          }`}
+        >
+          {icon}
         </div>
-
-        {/* Outcome Section */}
-        {step >= 2 && !outcome && (
-          <div className="border-t border-[#F0F0F0] animate-fade-in">
-            <div className="grid grid-cols-2 divide-x divide-[#F0F0F0]">
-              <button
-                onClick={() => setOutcome('success')}
-                className="p-6 hover:bg-green-50/50 transition-colors group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                    <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div className="text-left">
-                    <p className="font-semibold text-green-700">Happened</p>
-                    <p className="text-xs text-green-600">Score: 0.04</p>
-                  </div>
-                </div>
-              </button>
-              <button
-                onClick={() => setOutcome('fail')}
-                className="p-6 hover:bg-red-50/50 transition-colors group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                    <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </div>
-                  <div className="text-left">
-                    <p className="font-semibold text-red-700">Didn't happen</p>
-                    <p className="text-xs text-red-600">Score: 0.64</p>
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Result */}
-        {outcome && (
-          <div className={`p-6 animate-fade-in ${outcome === 'success' ? 'bg-green-50' : 'bg-red-50'}`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  outcome === 'success' ? 'bg-green-200' : 'bg-red-200'
-                }`}>
-                  <span className={`text-xl font-bold tabular-nums ${
-                    outcome === 'success' ? 'text-green-700' : 'text-red-700'
-                  }`}>
-                    {outcome === 'success' ? '0.04' : '0.64'}
-                  </span>
-                </div>
-                <div>
-                  <p className={`font-semibold ${outcome === 'success' ? 'text-green-800' : 'text-red-800'}`}>
-                    {outcome === 'success' ? 'Well calibrated' : 'Overconfident'}
-                  </p>
-                  <p className={`text-sm ${outcome === 'success' ? 'text-green-600' : 'text-red-600'}`}>
-                    {outcome === 'success' ? 'Your confidence matched reality' : 'High confidence, wrong outcome'}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={reset}
-                className="text-sm text-[#707070] hover:text-[#1A1A1A] px-4 py-2 rounded-lg hover:bg-white/50 transition-colors"
-              >
-                Reset
-              </button>
-            </div>
-          </div>
-        )}
       </div>
-
-      {/* Caption */}
-      <p className="text-center text-[#909090] text-sm mt-6">
-        Lower scores = better calibration. 0 is perfect.
-      </p>
+      <div>
+        <h3 className="font-semibold text-lg mb-1">{title}</h3>
+        <p className="text-[#707070] text-sm">{description}</p>
+      </div>
     </div>
   );
 }
@@ -174,24 +146,7 @@ export function Landing() {
   return (
     <div className="min-h-dvh bg-[#FAFAF9] text-[#1A1A1A]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAFAF9]/80 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo />
-            <span className="font-semibold text-lg">Sense</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <a href="#features" className="text-sm text-[#707070] hover:text-[#1A1A1A] transition-colors">Features</a>
-            <Link to="/how-it-works" className="text-sm text-[#707070] hover:text-[#1A1A1A] transition-colors">How it works</Link>
-            <Link
-              to="/app"
-              className="bg-[#1A1A1A] hover:bg-[#333] text-white px-5 py-2.5 rounded-full font-medium transition-colors text-sm"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <MobileNav />
 
       {/* Hero */}
       <section className="pt-32 pb-16 px-6">
@@ -212,12 +167,24 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Demo */}
+      {/* Launch Video */}
       <section className="py-16 px-6">
-        <div className="max-w-xl mx-auto">
-          <PredictionDemo />
+        <div className="max-w-2xl mx-auto">
+          <div className="rounded-3xl overflow-hidden shadow-2xl shadow-black/10 border border-[#E8E8E8]">
+            <Player
+              component={LaunchVideoComposition}
+              durationInFrames={VIDEO_CONFIG.durationInFrames}
+              compositionWidth={VIDEO_CONFIG.width}
+              compositionHeight={VIDEO_CONFIG.height}
+              fps={VIDEO_CONFIG.fps}
+              style={{ width: '100%', aspectRatio: '3/2' }}
+              controls
+              loop
+              autoPlay
+            />
+          </div>
           <p className="text-center text-[#707070] text-sm mt-6">
-            Lower scores are better. 0 = perfect, 0.25 = random.
+            See how Sense helps you track and improve your prediction accuracy.
           </p>
         </div>
       </section>
@@ -226,10 +193,12 @@ export function Landing() {
       <section id="features" className="py-16 px-6 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-4">
-            {/* Card 1 */}
-            <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 rounded-3xl p-8 aspect-square flex flex-col group">
-              <div className="flex-1 flex items-center justify-center">
-                <svg className="w-24 h-24 text-indigo-400 group-hover:scale-110 transition-transform duration-500" viewBox="0 0 100 100" fill="none">
+            <FeatureCard
+              gradient="bg-gradient-to-br from-indigo-50 to-white"
+              borderColor="border border-indigo-100"
+              iconColor="text-indigo-400"
+              icon={
+                <svg className="w-24 h-24" viewBox="0 0 100 100" fill="none">
                   <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="3" strokeDasharray="8 4" opacity="0.5"/>
                   <circle cx="50" cy="50" r="25" stroke="currentColor" strokeWidth="3"/>
                   <circle cx="50" cy="50" r="8" fill="currentColor"/>
@@ -238,45 +207,43 @@ export function Landing() {
                   <path d="M10 50 L25 50" stroke="currentColor" strokeWidth="2"/>
                   <path d="M75 50 L90 50" stroke="currentColor" strokeWidth="2"/>
                 </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-1">Track predictions</h3>
-                <p className="text-[#707070] text-sm">Record what you think will happen with a probability and deadline.</p>
-              </div>
-            </div>
+              }
+              title="Track predictions"
+              description="Record what you think will happen with a probability and deadline."
+            />
 
-            {/* Card 2 */}
-            <div className="bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 rounded-3xl p-8 aspect-square flex flex-col group">
-              <div className="flex-1 flex items-center justify-center">
-                <svg className="w-24 h-24 text-emerald-400 group-hover:scale-110 transition-transform duration-500" viewBox="0 0 100 100" fill="none">
+            <FeatureCard
+              gradient="bg-gradient-to-br from-emerald-50 to-white"
+              borderColor="border border-emerald-100"
+              iconColor="text-emerald-400"
+              icon={
+                <svg className="w-24 h-24" viewBox="0 0 100 100" fill="none">
                   <rect x="15" y="60" width="12" height="25" rx="2" fill="currentColor" opacity="0.3"/>
                   <rect x="32" y="45" width="12" height="40" rx="2" fill="currentColor" opacity="0.5"/>
                   <rect x="49" y="30" width="12" height="55" rx="2" fill="currentColor" opacity="0.7"/>
                   <rect x="66" y="20" width="12" height="65" rx="2" fill="currentColor"/>
                   <path d="M15 15 Q40 35, 78 12" stroke="currentColor" strokeWidth="2" strokeDasharray="4 2" opacity="0.5"/>
                 </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-1">See your accuracy</h3>
-                <p className="text-[#707070] text-sm">Brier scores show exactly how good your forecasting is.</p>
-              </div>
-            </div>
+              }
+              title="See your accuracy"
+              description="Brier scores show exactly how good your forecasting is."
+            />
 
-            {/* Card 3 */}
-            <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-100 rounded-3xl p-8 aspect-square flex flex-col group">
-              <div className="flex-1 flex items-center justify-center">
-                <svg className="w-24 h-24 text-amber-400 group-hover:scale-110 transition-transform duration-500" viewBox="0 0 100 100" fill="none">
+            <FeatureCard
+              gradient="bg-gradient-to-br from-amber-50 to-white"
+              borderColor="border border-amber-100"
+              iconColor="text-amber-400"
+              icon={
+                <svg className="w-24 h-24" viewBox="0 0 100 100" fill="none">
                   <rect x="20" y="20" width="60" height="60" rx="8" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.1"/>
                   <path d="M35 45 L45 55 L65 35" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M30 70 L70 70" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
                   <path d="M35 78 L55 78" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.3"/>
                 </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-1">Learn from outcomes</h3>
-                <p className="text-[#707070] text-sm">Add notes when closing predictions. Build a knowledge base.</p>
-              </div>
-            </div>
+              }
+              title="Learn from outcomes"
+              description="Add notes when closing predictions. Build a knowledge base."
+            />
           </div>
         </div>
       </section>
@@ -284,7 +251,7 @@ export function Landing() {
       {/* Feature List - Linear style */}
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             <div>
               <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

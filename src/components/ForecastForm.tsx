@@ -4,9 +4,8 @@ import {
   SuccessMetric,
   Novelty,
   NewForecastData,
-  WeightSettings,
 } from '../types';
-import { calculateWeight, getConfidenceBucket } from '../utils/scoring';
+import { getConfidenceBucket } from '../utils/scoring';
 import {
   validateImageFile,
   compressImage,
@@ -16,7 +15,6 @@ import {
 } from '../utils/imageUtils';
 
 interface ForecastFormProps {
-  weightSettings: WeightSettings;
   onSubmit: (data: NewForecastData) => void;
   onCancel: () => void;
 }
@@ -35,7 +33,7 @@ const successMetrics: SuccessMetric[] = [
 ];
 const noveltyOptions: Novelty[] = ['New Behavior', 'New Persona', 'Known Problem'];
 
-export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFormProps) {
+export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
   const [betType, setBetType] = useState<BetType>('Feature');
   const [prediction, setPrediction] = useState('');
   const [successMetric, setSuccessMetric] = useState<SuccessMetric>('Growth');
@@ -53,7 +51,6 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
   const [errors, setErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const weight = calculateWeight(betType, novelty, weightSettings);
   const confidenceBucket = getConfidenceBucket(probability);
 
   // Fun feedback based on probability

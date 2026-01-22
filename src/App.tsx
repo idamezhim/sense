@@ -73,7 +73,6 @@ function MainApp() {
           element={
             showNewForecast ? (
               <ForecastForm
-                weightSettings={weightSettings}
                 onSubmit={handleNewForecast}
                 onCancel={() => setShowNewForecast(false)}
               />

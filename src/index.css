@@ -1,8 +1,68 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --bg-primary: #0A0A0A;
+    --bg-secondary: #111111;
+    --bg-tertiary: #171717;
+    --bg-elevated: #1A1A1A;
+    --border: #262626;
+    --border-light: #333333;
+    --text-primary: #EDEDED;
+    --text-secondary: #A1A1A1;
+    --text-tertiary: #707070;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
   body {
     @apply bg-slate-900 text-slate-100 antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out;
+  }
+
+  @keyframes bar-grow {
+    0%, 100% {
+      transform: scaleY(1);
+    }
+    50% {
+      transform: scaleY(0.8);
+    }
+  }
+
+  @keyframes check-draw {
+    0%, 100% {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+    50% {
+      stroke-dashoffset: 50;
+      opacity: 0.5;
+    }
   }
 }
 

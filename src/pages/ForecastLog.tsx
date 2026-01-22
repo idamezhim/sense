@@ -34,66 +34,72 @@ export function ForecastLog({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Forecast Log</h1>
-          <p className="text-slate-400 mt-1">Track your product predictions</p>
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Forecasts</h1>
+          <button
+            onClick={onNewForecast}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm flex items-center gap-2 shrink-0"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 5v14M5 12h14" strokeLinecap="round"/>
+            </svg>
+            <span className="hidden sm:inline">New Forecast</span>
+            <span className="sm:hidden">New</span>
+          </button>
         </div>
-        <button onClick={onNewForecast} className="btn btn-primary">
-          + New Forecast
-        </button>
+        <p className="text-slate-400 mt-1 text-sm">Track and close your predictions</p>
       </div>
 
-      <div className="flex items-center gap-2 mb-6">
+      {/* Filter tabs */}
+      <div className="flex items-center gap-1 mb-6 bg-slate-800/50 rounded-lg p-1">
         {filterOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => setFilter(option.value)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               filter === option.value
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700'
+                ? 'bg-slate-700 text-white'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             {option.label}
-            <span className="ml-1.5 text-xs opacity-75">({counts[option.value]})</span>
+            <span className="ml-1.5 text-slate-500">
+              {counts[option.value]}
+            </span>
           </button>
         ))}
       </div>
 
       {filteredForecasts.length === 0 ? (
-        <div className="card text-center py-12">
-          <div className="text-slate-500 mb-4">
-            <svg
-              className="w-16 h-16 mx-auto"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
+        <div className="text-center py-16">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-800 flex items-center justify-center">
+            <svg className="w-8 h-8 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="12" cy="12" r="1" fill="currentColor" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-white mb-1">
+          <h3 className="text-lg font-medium text-white mb-2">
             {filter === 'all' ? 'No forecasts yet' : `No ${filter} forecasts`}
           </h3>
-          <p className="text-slate-400 mb-4">
+          <p className="text-slate-400 mb-6 max-w-sm mx-auto">
             {filter === 'all'
-              ? 'Create your first forecast to start tracking your judgment.'
-              : `You don't have any ${filter} forecasts.`}
+              ? 'Start tracking your product intuition by creating your first forecast.'
+              : `You don't have any ${filter} forecasts yet.`}
           </p>
           {filter === 'all' && (
-            <button onClick={onNewForecast} className="btn btn-primary">
-              Create First Forecast
+            <button
+              onClick={onNewForecast}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-full font-medium transition-colors"
+            >
+              Create your first forecast
             </button>
           )}
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filteredForecasts.map((forecast) => (
             <ForecastCard
               key={forecast.id}

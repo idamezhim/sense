@@ -56,6 +56,26 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
   const weight = calculateWeight(betType, novelty, weightSettings);
   const confidenceBucket = getConfidenceBucket(probability);
 
+  // Fun feedback based on probability
+  const getProbabilityFeedback = (prob: number) => {
+    if (prob <= 10) return { emoji: '🎲', text: 'Long shot', color: 'text-slate-400' };
+    if (prob <= 25) return { emoji: '🤔', text: 'Unlikely', color: 'text-amber-400' };
+    if (prob <= 40) return { emoji: '⚖️', text: 'Possible', color: 'text-yellow-400' };
+    if (prob <= 60) return { emoji: '🎯', text: 'Toss-up', color: 'text-blue-400' };
+    if (prob <= 75) return { emoji: '📈', text: 'Likely', color: 'text-emerald-400' };
+    if (prob <= 90) return { emoji: '💪', text: 'Confident', color: 'text-green-400' };
+    return { emoji: '🔥', text: 'Almost certain', color: 'text-indigo-400' };
+  };
+
+  const feedback = getProbabilityFeedback(probability);
+
+  // Quick date helpers
+  const setQuickDate = (days: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    setByWhen(date.toISOString().split('T')[0]);
+  };
+
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
@@ -184,7 +204,7 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
           >
             {betTypes.map((type) => (
               <option key={type} value={type}>
-                {type} (×{weightSettings.betType[type]})
+                {type}
               </option>
             ))}
           </select>
@@ -255,6 +275,23 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
               onChange={(e) => setByWhen(e.target.value)}
               className={`input ${errors.byWhen ? 'border-red-500' : ''}`}
             />
+            <div className="flex gap-1 mt-2">
+              {[
+                { label: '1w', days: 7 },
+                { label: '2w', days: 14 },
+                { label: '1mo', days: 30 },
+                { label: '3mo', days: 90 },
+              ].map((option) => (
+                <button
+                  key={option.label}
+                  type="button"
+                  onClick={() => setQuickDate(option.days)}
+                  className="px-2 py-1 text-xs rounded transition-colors bg-slate-700 hover:bg-slate-600 text-slate-300"
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
             {errors.byWhen && (
               <p className="text-red-500 text-sm mt-1">{errors.byWhen}</p>
             )}
@@ -272,7 +309,7 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
             >
               {noveltyOptions.map((option) => (
                 <option key={option} value={option}>
-                  {option} (×{weightSettings.novelty[option]})
+                  {option}
                 </option>
               ))}
             </select>
@@ -281,21 +318,35 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
 
         <div>
           <label htmlFor="probability" className="label">
-            Your Probability: {probability}%
+            Your Probability
           </label>
-          <input
-            type="range"
-            id="probability"
-            min="0"
-            max="100"
-            value={probability}
-            onChange={(e) => setProbability(Number(e.target.value))}
-            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-          />
-          <div className="flex justify-between text-xs text-slate-400 mt-1">
-            <span>0%</span>
-            <span className="font-medium text-slate-300">Bucket: {confidenceBucket}</span>
-            <span>100%</span>
+          <div className="rounded-xl p-4 mb-2 bg-slate-700/50">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-3xl">{feedback.emoji}</span>
+                <div>
+                  <span className="text-2xl font-bold tabular-nums text-white">{probability}%</span>
+                  <p className={`text-sm font-medium ${feedback.color}`}>{feedback.text}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-xs text-slate-400">Bucket</span>
+                <p className="text-sm font-medium text-slate-300">{confidenceBucket}</p>
+              </div>
+            </div>
+            <input
+              type="range"
+              id="probability"
+              min="0"
+              max="100"
+              value={probability}
+              onChange={(e) => setProbability(Number(e.target.value))}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-indigo-500 bg-slate-600"
+            />
+            <div className="flex justify-between text-xs mt-2 text-slate-500">
+              <span>Unlikely</span>
+              <span>Certain</span>
+            </div>
           </div>
         </div>
 
@@ -311,7 +362,7 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
             placeholder="What data, user research, or reasoning supports this prediction?"
             maxLength={2000}
           />
-          <div className="text-xs text-slate-500 mt-1 text-right">
+          <div className="text-xs mt-1 text-right text-slate-500">
             {evidence.length}/2000
           </div>
         </div>
@@ -328,14 +379,14 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
             placeholder="What could cause this prediction to be wrong?"
             maxLength={1000}
           />
-          <div className="text-xs text-slate-500 mt-1 text-right">
+          <div className="text-xs mt-1 text-right text-slate-500">
             {risks.length}/1000
           </div>
         </div>
 
         <div>
           <label className="label">Supporting Image (optional)</label>
-          <p className="text-xs text-slate-400 mb-2">
+          <p className="text-xs mb-2 text-slate-400">
             PNG, JPG, GIF, or WebP up to 2MB (compressed to ~500KB)
           </p>
 
@@ -401,7 +452,7 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
               )}
             </div>
           ) : (
-            <div className="relative border border-slate-600 rounded-lg p-3">
+            <div className="relative rounded-lg p-3 border border-slate-600">
               <div className="flex items-center gap-3">
                 <img
                   src={imageData}
@@ -409,7 +460,7 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white truncate">{imageName}</p>
+                  <p className="text-sm truncate text-white">{imageName}</p>
                   <p className="text-xs text-slate-400">
                     {formatBytes(estimateStorageSize(imageData))} (compressed)
                   </p>
@@ -435,18 +486,6 @@ export function ForecastForm({ weightSettings, onSubmit, onCancel }: ForecastFor
           {imageError && (
             <p className="text-red-400 text-sm mt-2">{imageError}</p>
           )}
-        </div>
-
-        <div className="bg-slate-700/50 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-300">Calculated Weight</span>
-            <span className="text-lg font-semibold text-indigo-400">
-              ×{weight.toFixed(2)}
-            </span>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">
-            {betType} (×{weightSettings.betType[betType]}) × {novelty} (×{weightSettings.novelty[novelty]})
-          </p>
         </div>
 
         <div className="flex gap-3 pt-2">

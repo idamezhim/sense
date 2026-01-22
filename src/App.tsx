@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { Agentation } from 'agentation';
 import { useForecasts } from './hooks/useForecasts';
 import { Forecast, NewForecastData, CloseForecastData } from './types';
 import { Layout } from './components/Layout';
+import { Landing } from './pages/Landing';
+import { HowItWorks } from './pages/HowItWorks';
 import { Onboarding } from './pages/Onboarding';
 import { ForecastLog } from './pages/ForecastLog';
 import { Dashboard } from './pages/Dashboard';
@@ -10,7 +13,7 @@ import { Settings } from './pages/Settings';
 import { ForecastForm } from './components/ForecastForm';
 import { CloseModal } from './components/CloseModal';
 
-function AppContent() {
+function MainApp() {
   const navigate = useNavigate();
   const {
     forecasts,
@@ -59,7 +62,7 @@ function AppContent() {
 
   const handleClearAll = () => {
     clearAllData();
-    navigate('/');
+    navigate('/app');
   };
 
   return (
@@ -112,10 +115,21 @@ function AppContent() {
   );
 }
 
+function AppContent() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/how-it-works" element={<HowItWorks />} />
+      <Route path="/app/*" element={<MainApp />} />
+    </Routes>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter basename="/sense">
       <AppContent />
+      {import.meta.env.DEV && <Agentation />}
     </BrowserRouter>
   );
 }

@@ -1,5 +1,4 @@
 import { Forecast } from '../types';
-import { StatusBadge, BetTypeBadge } from './ScoreBadge';
 import { formatBrierScore } from '../utils/scoring';
 
 interface ForecastCardProps {
@@ -9,109 +8,76 @@ interface ForecastCardProps {
 
 export function ForecastCard({ forecast, onClick }: ForecastCardProps) {
   const dueDate = new Date(forecast.byWhen);
+  const createdDate = new Date(forecast.dateCreated);
   const isOverdue = forecast.status === 'open' && dueDate < new Date();
+  const isOpen = forecast.status === 'open';
 
   return (
     <div
       onClick={onClick}
-      className="card cursor-pointer hover:bg-slate-750 hover:border-slate-600 transition-all"
+      className="group relative rounded-xl cursor-pointer transition-all duration-200 hover:scale-[1.01]"
+      style={{
+        background: 'linear-gradient(to bottom right, rgba(51, 65, 85, 0.5), rgba(30, 41, 59, 0.5))',
+        boxShadow: 'inset 0 1px 0 0 rgba(148, 163, 184, 0.1)',
+      }}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-mono text-slate-500">{forecast.id}</span>
-            <StatusBadge status={forecast.status} />
-            <BetTypeBadge betType={forecast.betType} />
-          </div>
+      {/* Subtle border */}
+      <div className="absolute inset-0 rounded-xl border border-slate-700/50 group-hover:border-slate-600/80 transition-colors" />
 
-          <h3 className="font-medium text-white truncate mb-1">
-            {forecast.prediction}
-          </h3>
-
-          <div className="flex items-center gap-4 text-sm text-slate-400">
-            <span>
-              Target: <span className="text-slate-300">{forecast.targetThreshold}</span>
-            </span>
-            <span>
-              Metric: <span className="text-slate-300">{forecast.successMetric}</span>
-            </span>
-          </div>
-
-          {/* Indicators for evidence, risks, and image */}
-          {(forecast.evidence || forecast.risks || forecast.imageData) && (
-            <div className="flex items-center gap-2 mt-2">
-              {forecast.evidence && (
-                <span
-                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-900/40 text-emerald-400 text-xs rounded"
-                  title="Has supporting evidence"
-                >
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Evidence
-                </span>
-              )}
-              {forecast.risks && (
-                <span
-                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-900/40 text-amber-400 text-xs rounded"
-                  title="Has identified risks"
-                >
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  Risks
-                </span>
-              )}
-              {forecast.imageData && (
-                <span
-                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-900/40 text-blue-400 text-xs rounded"
-                  title="Has attached image"
-                >
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Image
-                </span>
-              )}
+      <div className="relative p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            {/* Status row */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-amber-400' : 'bg-slate-500'}`} />
+              <span className="text-xs text-slate-500 uppercase tracking-wide">
+                {forecast.betType}
+              </span>
             </div>
-          )}
-        </div>
 
-        <div className="text-right shrink-0">
-          <div className="text-2xl font-semibold text-indigo-400">
-            {forecast.probability}%
+            {/* Prediction text */}
+            <h3 className="font-medium text-slate-100 leading-snug line-clamp-2">
+              {forecast.prediction}
+            </h3>
+
+            {/* Meta row */}
+            <div className="flex flex-wrap items-center gap-2 mt-3 text-xs text-slate-500">
+              <span className="px-2 py-0.5 rounded bg-slate-800/80">
+                {forecast.successMetric}
+              </span>
+              <span className={`${isOverdue ? 'text-red-400' : ''}`}>
+                Due {dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </span>
+            </div>
           </div>
-          <div className="text-xs text-slate-500">{forecast.confidenceBucket}</div>
-        </div>
-      </div>
 
-      <div className="mt-4 pt-4 border-t border-slate-700 flex items-center justify-between">
-        <div className="text-sm">
-          <span className={`${isOverdue ? 'text-red-400 font-medium' : 'text-slate-400'}`}>
-            Due: {dueDate.toLocaleDateString()}
-          </span>
-          {isOverdue && (
-            <span className="ml-2 text-xs text-red-400">(Overdue)</span>
-          )}
-        </div>
-
-        {forecast.status === 'closed' && forecast.brierScore !== undefined && (
-          <div className="text-sm">
-            <span className="text-slate-400">Brier: </span>
-            <span className="font-mono font-medium text-white">
-              {formatBrierScore(forecast.brierScore)}
-            </span>
-            {forecast.actualOutcome && (
-              <span className="ml-2 text-slate-400">({forecast.actualOutcome})</span>
+          {/* Probability */}
+          <div className="text-right shrink-0 pl-2">
+            <div className={`text-xl sm:text-2xl font-semibold tabular-nums ${isOpen ? 'text-slate-100' : 'text-slate-400'}`}>
+              {forecast.probability}%
+            </div>
+            {forecast.status === 'closed' && forecast.brierScore !== undefined && (
+              <div className="text-xs text-slate-500 mt-1">
+                {formatBrierScore(forecast.brierScore)}
+              </div>
             )}
           </div>
-        )}
+        </div>
 
-        {forecast.status === 'open' && (
-          <span className="text-sm text-indigo-400 font-medium">
-            Click to close →
+        {/* Bottom row - only show on hover for open, always show outcome for closed */}
+        <div className="mt-3 pt-3 border-t border-slate-700/30 flex items-center justify-between">
+          <span className="text-xs text-slate-600">
+            {createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
-        )}
+
+          {forecast.status === 'closed' ? (
+            <span className="text-xs text-slate-500">{forecast.actualOutcome}</span>
+          ) : (
+            <span className="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              Close →
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

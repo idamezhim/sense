@@ -177,15 +177,70 @@ export function Landing() {
               compositionWidth={VIDEO_CONFIG.width}
               compositionHeight={VIDEO_CONFIG.height}
               fps={VIDEO_CONFIG.fps}
-              style={{ width: '100%', aspectRatio: '3/2' }}
+              style={{ width: '100%', aspectRatio: '1/1' }}
               controls
               loop
-              autoPlay
+              renderPoster={() => (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: '#FAFAF9',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 40,
+                }}>
+                  <div style={{
+                    background: 'white',
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+                    borderRadius: 24,
+                    border: '1px solid #E8E8E8',
+                    width: '100%',
+                    maxWidth: 600,
+                    padding: 24,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid #E5E5E5' }}>
+                      <span style={{ color: '#707070', fontSize: 14 }}>#</span>
+                      <span style={{ color: '#1A1A1A', fontWeight: 600, fontSize: 16 }}>product-team</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                      <div style={{ display: 'flex', gap: 12 }}>
+                        <div style={{ width: 40, height: 40, borderRadius: 8, background: 'linear-gradient(135deg, #EC4899, #F472B6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>👩</div>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
+                            <span style={{ color: '#1A1A1A', fontWeight: 700, fontSize: 15 }}>Sarah</span>
+                            <span style={{ color: '#9CA3AF', fontSize: 12 }}>2:34 PM</span>
+                          </div>
+                          <p style={{ color: '#374151', fontSize: 15, margin: 0 }}>I think dark mode will increase retention by at least 20%</p>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 12 }}>
+                        <div style={{ width: 40, height: 40, borderRadius: 8, background: 'linear-gradient(135deg, #3B82F6, #60A5FA)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>👨</div>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
+                            <span style={{ color: '#1A1A1A', fontWeight: 700, fontSize: 15 }}>Mike</span>
+                            <span style={{ color: '#9CA3AF', fontSize: 12 }}>2:35 PM</span>
+                          </div>
+                          <p style={{ color: '#374151', fontSize: 15, margin: 0 }}>No way, maybe 5% at most</p>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 12 }}>
+                        <div style={{ width: 40, height: 40, borderRadius: 8, background: 'linear-gradient(135deg, #EC4899, #F472B6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>👩</div>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
+                            <span style={{ color: '#1A1A1A', fontWeight: 700, fontSize: 15 }}>Sarah</span>
+                            <span style={{ color: '#9CA3AF', fontSize: 12 }}>2:36 PM</span>
+                          </div>
+                          <p style={{ color: '#374151', fontSize: 15, margin: 0 }}>Want to bet on it? 😏</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              showPosterWhenUnplayed
             />
           </div>
-          <p className="text-center text-[#707070] text-sm mt-6">
-            See how Sense helps you track and improve your prediction accuracy.
-          </p>
         </div>
       </section>
 

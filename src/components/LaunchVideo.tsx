@@ -6,7 +6,6 @@ import {
   spring,
   Sequence,
   Audio,
-  staticFile,
 } from 'remotion';
 
 // Typing animation for text

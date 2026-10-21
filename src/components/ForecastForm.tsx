@@ -3,6 +3,7 @@ import {
   BetType,
   SuccessMetric,
   Novelty,
+  Stance,
   NewForecastData,
 } from '../types';
 import { getConfidenceBucket } from '../utils/scoring';
@@ -39,6 +40,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
   const [successMetric, setSuccessMetric] = useState<SuccessMetric>('Growth');
   const [targetThreshold, setTargetThreshold] = useState('');
   const [byWhen, setByWhen] = useState('');
+  const [stance, setStance] = useState<Stance>('succeed');
   const [probability, setProbability] = useState(50);
   const [novelty, setNovelty] = useState<Novelty>('Known Problem');
   const [evidence, setEvidence] = useState('');
@@ -164,6 +166,7 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
         successMetric,
         targetThreshold: targetThreshold.trim(),
         byWhen,
+        stance,
         probability,
         novelty,
         evidence: evidence.trim() || undefined,
@@ -314,8 +317,41 @@ export function ForecastForm({ onSubmit, onCancel }: ForecastFormProps) {
         </div>
 
         <div>
+          <span className="label">Your Call</span>
+          <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Your call">
+            {([
+              { value: 'succeed', label: 'Will succeed', hint: 'Hits the target' },
+              { value: 'fail', label: 'Will fail', hint: 'Misses the target' },
+            ] as { value: Stance; label: string; hint: string }[]).map((option) => {
+              const selected = stance === option.value;
+              const selectedStyle =
+                option.value === 'fail'
+                  ? 'border-red-400 bg-red-50 text-[#1A1A1A]'
+                  : 'border-indigo-500 bg-indigo-50 text-[#1A1A1A]';
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => setStance(option.value)}
+                  className={`p-3 rounded-xl border text-left transition-colors ${
+                    selected
+                      ? selectedStyle
+                      : 'border-[#E5E7EB] hover:border-[#9CA3AF] hover:bg-[#F9FAFB] text-[#374151]'
+                  }`}
+                >
+                  <span className="block text-sm font-medium">{option.label}</span>
+                  <span className="block text-xs text-[#707070]">{option.hint}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
           <label htmlFor="probability" className="label">
-            Your Probability
+            How sure are you it {stance === 'fail' ? 'fails' : 'succeeds'}?
           </label>
           <div className="rounded-xl p-4 mb-2 bg-[#F9FAFB] border border-[#E5E7EB]">
             <div className="flex items-center justify-between mb-3">

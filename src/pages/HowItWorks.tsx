@@ -613,6 +613,9 @@ export function HowItWorks() {
             <p>
               The Brier score measures the accuracy of probabilistic predictions. It's calculated as the squared difference between your predicted probability and the actual outcome (1 for happened, 0 for didn't happen).
             </p>
+            <p>
+              You can bet a feature will fail as well as succeed. For a fail bet, your probability is how sure you are it misses, and the outcome is flipped: a feature that fails counts as 1, so a confident fail call that comes true scores well.
+            </p>
             <div className="bg-white rounded-xl p-6 border border-[#E5E5E5] not-prose">
               <p className="font-mono text-sm mb-4">Score = (probability - outcome)²</p>
               <div className="space-y-2 text-sm">

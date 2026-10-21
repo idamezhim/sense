@@ -56,7 +56,7 @@ export function CloseModal({ forecast, onClose, onCancel }: CloseModalProps) {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[#707070]">
               <span>Target: <span className="text-[#1A1A1A]">{forecast.targetThreshold}</span></span>
               <span>Due: <span className="text-[#1A1A1A]">{new Date(forecast.byWhen).toLocaleDateString()}</span></span>
-              <span>Predicted: <span className="text-indigo-600 font-semibold">{forecast.probability}%</span></span>
+              <span>Predicted: <span className="text-indigo-600 font-semibold">{forecast.probability}% it {forecast.stance === 'fail' ? 'fails' : 'succeeds'}</span></span>
               <span>Created: <span className="text-[#1A1A1A]">{new Date(forecast.dateCreated).toLocaleDateString()}</span></span>
             </div>
           </div>

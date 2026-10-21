@@ -22,6 +22,9 @@ export type SuccessMetric =
   | 'NPS'
   | 'Satisfaction';
 
+// Stance: is the PM betting the feature succeeds or fails?
+export type Stance = 'succeed' | 'fail';
+
 // Novelty Types
 export type Novelty = 'New Behavior' | 'New Persona' | 'Known Problem';
 
@@ -67,7 +70,8 @@ export interface Forecast {
   successMetric: SuccessMetric;
   targetThreshold: string;
   byWhen: string;
-  probability: number; // 0-100
+  stance?: Stance; // Missing on older forecasts = 'succeed'
+  probability: number; // 0-100, confidence in the stance
   confidenceBucket: string; // Derived: "70-80%"
   novelty: Novelty;
   weight: number; // Calculated: betTypeWeight × noveltyWeight
@@ -80,7 +84,7 @@ export interface Forecast {
 
   // Filled when closing
   actualOutcome?: OutcomeLevel;
-  outcomeScore?: number; // 0.0 - 1.0
+  outcomeScore?: number; // 0.0 - 1.0, how well the feature did (not the call)
   brierScore?: number;
   weightedBrier?: number;
   learningNote?: string;
@@ -149,6 +153,7 @@ export interface NewForecastData {
   successMetric: SuccessMetric;
   targetThreshold: string;
   byWhen: string;
+  stance: Stance;
   probability: number;
   novelty: Novelty;
   risks?: string;

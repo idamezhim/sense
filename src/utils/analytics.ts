@@ -1,5 +1,5 @@
 import { Forecast, BetType, CalibrationBucket } from '../types';
-import { calculateOverallBrierScore } from './scoring';
+import { calculateOverallBrierScore, getCallOutcome } from './scoring';
 
 /**
  * Get forecast counts by status
@@ -33,7 +33,7 @@ export function getCalibrationByBucket(forecasts: Forecast[]): CalibrationBucket
     }
     const data = bucketMap.get(bucket)!;
     data.probabilities.push(f.probability);
-    data.outcomes.push(f.outcomeScore!);
+    data.outcomes.push(getCallOutcome(f.outcomeScore!, f.stance));
   });
 
   // Calculate averages and sort by bucket

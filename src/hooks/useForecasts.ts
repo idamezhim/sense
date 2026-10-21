@@ -56,6 +56,7 @@ export function useForecasts() {
         successMetric: data.successMetric,
         targetThreshold: data.targetThreshold,
         byWhen: data.byWhen,
+        stance: data.stance,
         probability: data.probability,
         confidenceBucket,
         novelty: data.novelty,
@@ -83,7 +84,7 @@ export function useForecasts() {
           if (f.id !== forecastId) return f;
 
           const outcomeScore = getOutcomeScore(data.actualOutcome);
-          const brierScore = calculateBrierScore(f.probability, data.actualOutcome);
+          const brierScore = calculateBrierScore(f.probability, data.actualOutcome, f.stance);
           const weightedBrier = calculateWeightedBrier(brierScore, f.weight);
 
           closedForecast = {

@@ -165,7 +165,7 @@ export function Dashboard({ forecasts }: DashboardProps) {
                   </div>
                   <p className="text-sm text-[#1A1A1A] line-clamp-2">{forecast.prediction}</p>
                   <div className="text-xs text-[#707070] mt-1">
-                    {forecast.probability}% → {forecast.actualOutcome}
+                    {forecast.probability}% {forecast.stance === 'fail' ? 'fails' : 'succeeds'} → {forecast.actualOutcome}
                   </div>
                 </div>
               ))}
@@ -187,7 +187,7 @@ export function Dashboard({ forecasts }: DashboardProps) {
                   </div>
                   <p className="text-sm text-[#1A1A1A] line-clamp-2">{forecast.prediction}</p>
                   <div className="text-xs text-[#707070] mt-1">
-                    {forecast.probability}% → {forecast.actualOutcome}
+                    {forecast.probability}% {forecast.stance === 'fail' ? 'fails' : 'succeeds'} → {forecast.actualOutcome}
                   </div>
                 </div>
               ))}

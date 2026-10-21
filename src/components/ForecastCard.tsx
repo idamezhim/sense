@@ -11,6 +11,7 @@ export function ForecastCard({ forecast, onClick }: ForecastCardProps) {
   const createdDate = new Date(forecast.dateCreated);
   const isOverdue = forecast.status === 'open' && dueDate < new Date();
   const isOpen = forecast.status === 'open';
+  const isFailBet = forecast.stance === 'fail';
 
   return (
     <div
@@ -38,6 +39,11 @@ export function ForecastCard({ forecast, onClick }: ForecastCardProps) {
               <span className="px-2 py-0.5 rounded bg-[#F3F4F6]">
                 {forecast.successMetric}
               </span>
+              {isFailBet && (
+                <span className="px-2 py-0.5 rounded bg-red-50 text-red-600 border border-red-200">
+                  Betting it fails
+                </span>
+              )}
               <span className={`${isOverdue ? 'text-red-500' : ''}`}>
                 Due {dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </span>
@@ -48,6 +54,9 @@ export function ForecastCard({ forecast, onClick }: ForecastCardProps) {
           <div className="text-right shrink-0 pl-2">
             <div className={`text-xl sm:text-2xl font-semibold tabular-nums ${isOpen ? 'text-[#1A1A1A]' : 'text-[#9CA3AF]'}`}>
               {forecast.probability}%
+            </div>
+            <div className="text-[10px] uppercase tracking-wide text-[#9CA3AF]">
+              {isFailBet ? 'fails' : 'succeeds'}
             </div>
             {forecast.status === 'closed' && forecast.brierScore !== undefined && (
               <div className="text-xs text-[#707070] mt-1">

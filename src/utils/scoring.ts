@@ -7,6 +7,7 @@ import {
   BRIER_LEVEL_THRESHOLDS,
   BrierLevel,
   Forecast,
+  Stance,
 } from '../types';
 
 /**
@@ -31,16 +32,25 @@ export function getConfidenceBucket(probability: number): string {
 }
 
 /**
+ * How right the call was, 0.0 - 1.0.
+ * A bet on failure is right when the feature does badly, so the outcome flips.
+ */
+export function getCallOutcome(outcomeScore: number, stance: Stance = 'succeed'): number {
+  return stance === 'fail' ? 1 - outcomeScore : outcomeScore;
+}
+
+/**
  * Calculate Brier score from probability and outcome
- * Brier Score = (probability/100 - outcomeScore)²
+ * Brier Score = (probability/100 - callOutcome)²
  */
 export function calculateBrierScore(
   probability: number,
-  outcomeLevel: OutcomeLevel
+  outcomeLevel: OutcomeLevel,
+  stance: Stance = 'succeed'
 ): number {
   const probabilityDecimal = probability / 100;
-  const outcomeScore = OUTCOME_SCORES[outcomeLevel];
-  return Math.pow(probabilityDecimal - outcomeScore, 2);
+  const callOutcome = getCallOutcome(OUTCOME_SCORES[outcomeLevel], stance);
+  return Math.pow(probabilityDecimal - callOutcome, 2);
 }
 
 /**

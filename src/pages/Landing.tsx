@@ -176,7 +176,7 @@ export function Landing() {
             Measure your product sense.
           </h1>
           <p className="text-xl text-[#707070] max-w-lg mb-8">
-            Record predictions. Track outcomes.<br />
+            Bet on what will work, and what will fail.<br />
             See if your intuition is actually good.
           </p>
           <Link
@@ -286,7 +286,7 @@ export function Landing() {
                 </svg>
               }
               title="Track predictions"
-              description="Record what you think will happen with a probability and deadline."
+              description="Bet a feature will succeed or fail, with a probability and deadline."
             />
 
             <FeatureCard
